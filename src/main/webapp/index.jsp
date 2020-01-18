@@ -1,5 +1,5 @@
 <html>
 <body>
-<h2>Welcome to Devops Class of Gyanvriskh</h2>
+<h2>Welcome to Devops Class of Gyanvriskh Institute</h2>
 </body>
 </html>
