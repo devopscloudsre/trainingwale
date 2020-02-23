@@ -1,5 +1,5 @@
 <html>
 <body>
-<h2>Welcome to Devops. This is Maven deployment  testing</h2>
+<h2>Welcome to Devops. This is DevOps Docker project 3 Example</h2>
 </body>
 </html>
