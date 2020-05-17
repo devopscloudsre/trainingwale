@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  tomcat:
+    image: 127.0.0.1:5000/tomcatstack
+    #build: .
+    ports:
+      - "8080:8080"
+
