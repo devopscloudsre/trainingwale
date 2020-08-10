@@ -1,0 +1,61 @@
+---
+- name: Play1 for copying files
+  hosts: docker-master
+  become: yes
+  tasks:
+    - name: Copy the war file, dockerfile & stack.yml to docker master server
+      copy:
+        src: /home/ansadmin/trainingwale/
+        dest: /opt/docker/trainingwale
+        owner: root
+        group: root
+        mode: '0777'
+
+- name: "Play 2 Install Python packages and docker image push"
+  hosts: docker-master
+  become: yes
+  vars:
+    ansible_python_interpreter: /usr/bin/python
+  tasks:
+    - name: Install boto3 and botocore with pip3 module
+      pip:
+       name:
+        - boto3
+        - botocore
+        - docker
+       executable: pip-2.7
+      register: out1
+    - debug:
+        var: out1
+
+    - name: "Delete the docker image"
+      docker_image:
+        state: absent
+        force: yes
+        name: 127.0.0.1:5000/trainingwaleapp
+        tag: latest
+      register: out2
+    - debug:
+        var: out2
+
+    - name: Build an image and push it to a private repo
+      docker_image:
+        path: /opt/docker/trainingwale
+        name: 127.0.0.1:5000/trainingwaleapp
+        tag: latest
+        push: yes
+        nocache: yes
+        force: yes
+      register: out3
+    - debug:
+        var: out3
+
+- name: "Play 3 docker stack deploy"
+  hosts: docker-master
+  become: yes
+  tasks:
+    - name: stop the stack
+      shell: docker stack rm trainingwale
+
+    - name: start the stack
+      shell: docker stack deploy --compose-file /opt/docker/trainingwale/trainingwale.yml trainingwale
