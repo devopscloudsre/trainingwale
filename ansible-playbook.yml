@@ -1,9 +1,9 @@
 ---
-- name: Play1 for copying files
+- name: "Play1 for copying files"
   hosts: docker-master
   become: yes
   tasks:
-    - name: Copy the war file, dockerfile & stack.yml to docker master server
+    - name: Copy the war file, dockerfile & flipkart.yml to docker master server
       copy:
         src: /home/ansadmin/trainingwale/
         dest: /opt/docker/trainingwale
@@ -23,6 +23,8 @@
         - boto3
         - botocore
         - docker
+        - pyyaml
+        - jsondiff
        executable: pip-2.7
       register: out1
     - debug:
@@ -58,4 +60,8 @@
       shell: docker stack rm trainingwale
 
     - name: start the stack
-      shell: docker stack deploy --compose-file /opt/docker/trainingwale/trainingwale.yml trainingwale
+      docker_stack: #docker stack deploy --compose-file /opt/docker/trainingwale/trainingwale.yml trainingwale
+        state: present
+        name: trainingwale
+        compose:
+          - /opt/docker/trainingwale/trainingwale.yml
