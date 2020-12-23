@@ -1,32 +1,60 @@
 ---
 - name: Play1 for copying files
-  hosts: docker-master
+  hosts: docker-manager
   become: yes
   tasks:
-    - name: Copy the war file, dockerfile & flipkart.yml to docker master server
+    - name: Copy the war file, dockerfile & training-com.yml to docker master server
       copy:
-        src: /home/ansadmin/trainingwale/
-        dest: /opt/docker/trainingwale
+        src: /etc/ansible/training-com
+        dest: /opt/docker
         owner: root
         group: root
         mode: '0777'
 
-- name: "Play 2 Install Python packages and docker image push"
-  hosts: docker-master
+- name: "Play 2- python istallation"
+  hosts: docker-manager
+  become: yes
+  tasks:
+    - name: Install Python 3.6
+      yum:
+        name: python36
+        state: present
+      register: out1
+      tags: python-install
+    - debug:
+        var: out1
+
+    - name: alternatives
+      alternatives:
+        name: python
+        link: /usr/bin/python3.6
+        path: /usr/bin/python3
+      register: out2
+      tags: python-alternatives
+    - debug:
+        var: out2
+
+- name: "Play 3 Install Python packages and docker image push"
+  hosts: docker-manager
   become: yes
   vars:
-    ansible_python_interpreter: /usr/bin/python
+    ansible_python_interpreter: /usr/bin/python3
   tasks:
     - name: Install boto3 and botocore with pip3 module
       pip:
        name:
+        - boto
         - boto3
         - botocore
-        - docker
-       executable: pip-2.7
-      register: out1
+          # - docker
+        - docker-py
+        - jsondiff
+        - pyyaml
+       executable: pip3.6
+      register: out3
+      tags: docker-lib-install
     - debug:
-        var: out1
+        var: out3
 
     - name: "Delete the docker image"
       docker_image:
@@ -34,29 +62,37 @@
         force: yes
         name: 127.0.0.1:5000/trainingwaleapp
         tag: latest
-      register: out2
+      register: out4
+      tags: docker-image-deletion
     - debug:
-        var: out2
+        var: out4
 
     - name: Build an image and push it to a private repo
       docker_image:
-        path: /opt/docker/trainingwale
+        path: /opt/docker/training-com
         name: 127.0.0.1:5000/trainingwaleapp
         tag: latest
         push: yes
         nocache: yes
         force: yes
-      register: out3
+      register: out5
+      tags: docker-image-build
     - debug:
-        var: out3
+        var: out5
 
 - name: "Play 3 docker stack deploy"
-  hosts: docker-master
+  hosts: docker-manager
   become: yes
   tasks:
-
-    - name: stop the stack
-      shell: docker stack rm trainingwale
+    - name: Remove stack
+      docker_stack:
+        name: trainingwale
+        state: absent
+      tags: docker-stack-remove
 
     - name: start the stack
-      shell: docker stack deploy --compose-file /opt/docker/trainingwale/trainingwale.yml trainingwale
+      shell: docker stack deploy --compose-file /opt/docker/training-com/trainingwale.yml trainingwale
+      register: out6
+      tags: docker-stack-deploy
+    - debug:
+        var: out6
