@@ -104,6 +104,9 @@
         name: trainingwale
         state: absent
       tags: docker-stack-remove
+      
+    - name: sleep for 10 sec
+      shell: sleep 10
 
     - name: start the stack
       shell: docker stack deploy --compose-file /tmp/training-com/trainingwale.yml trainingwale
