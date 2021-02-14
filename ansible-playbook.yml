@@ -107,9 +107,13 @@
       
     - name: sleep for 10 sec
       shell: sleep 10
-
-    - name: start the stack
-      shell: docker stack deploy --compose-file /tmp/training-com/trainingwale.yml trainingwale
+      
+    - name: Deploy stack from a compose file
+      docker_stack:
+        state: present
+        name: mystack
+        compose:
+          - /tmp/training-com/trainingwale.yml
       register: out6
       tags: docker-stack-deploy
     - debug:
