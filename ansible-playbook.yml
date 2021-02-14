@@ -3,15 +3,27 @@
   hosts: docker-manager
   become: yes
   tasks:
+    - name: Create a directory if it does not exist
+      file:
+        path: /tmp/training-com
+        state: directory
+        mode: '0755'
+        owner: ansadmin
+        group: root
+      tags:
+         - create-dir
+
     - name: Copy the war file, dockerfile & training-com.yml to docker master server
       copy:
-        src: /etc/ansible/training-com
-        dest: /opt/docker
-        owner: root
+        src: /etc/ansible/training-com/
+        dest: /tmp/training-com
+        owner: ansadmin
         group: root
         mode: '0777'
+      tags:
+        - copy_code
 
-- name: "Play 2- python istallation"
+- name: "Play 2- python installation"
   hosts: docker-manager
   become: yes
   tasks:
@@ -20,7 +32,8 @@
         name: python36
         state: present
       register: out1
-      tags: python-install
+      tags:
+        - python-install
     - debug:
         var: out1
 
@@ -30,7 +43,8 @@
         link: /usr/bin/python3.6
         path: /usr/bin/python3
       register: out2
-      tags: python-alternatives
+      tags:
+        - python-alternatives
     - debug:
         var: out2
 
@@ -46,8 +60,8 @@
         - boto
         - boto3
         - botocore
-          # - docker
-        - docker-py
+        - docker
+          #- docker-py
         - jsondiff
         - pyyaml
        executable: pip3.6
@@ -67,9 +81,10 @@
     - debug:
         var: out4
 
-    - name: Build an image and push it to a private repo
+    - name: "Build an image and push it to a private repo"
       docker_image:
-        path: /opt/docker/training-com
+        build:
+          path: /tmp/training-com
         name: 127.0.0.1:5000/trainingwaleapp
         tag: latest
         push: yes
@@ -91,7 +106,7 @@
       tags: docker-stack-remove
 
     - name: start the stack
-      shell: docker stack deploy --compose-file /opt/docker/training-com/trainingwale.yml trainingwale
+      shell: docker stack deploy --compose-file /tmp/training-com/trainingwale.yml trainingwale
       register: out6
       tags: docker-stack-deploy
     - debug:
