@@ -104,14 +104,14 @@
         name: trainingwale
         state: absent
       tags: docker-stack-remove
-      
+
     - name: sleep for 10 sec
       shell: sleep 10
-      
+
     - name: Deploy stack from a compose file
       docker_stack:
         state: present
-        name: mystack
+        name: trainingwale
         compose:
           - /tmp/training-com/trainingwale.yml
       register: out6
