@@ -6,7 +6,7 @@
     - name: Copy the war file, dockerfile & stack.yml to docker master server
       copy:
         src: /home/ansadmin/trainingwale/
-        dest: /opt/docker/trainingwale
+        dest: /home/ansadmin/trainingwale/
         owner: root
         group: root
         mode: '0777'
@@ -40,7 +40,7 @@
 
     - name: Build an image and push it to a private repo
       docker_image:
-        path: /opt/docker/trainingwale
+        path: /home/ansadmin/trainingwale/
         name: 127.0.0.1:5000/trainingwaleapp
         tag: latest
         push: yes
