@@ -14,19 +14,20 @@ pipeline {
             steps {
                 // Get some code from a GitHub repository
                 git branch: 'dev', url: 'https://github.com/mailrahulsre/java-db-Login.git'
-				}
-				}
-				
+		}
+	}
+			
         stage('build code') {
-            steps {
+     
+		steps {
                 // Run Maven on a Unix agent.
                 sh "mvn clean package"
-            }'
-			
-			      steps {
+            },	
+	      
+		steps {
                 // Run Maven on a Unix agent.
                 sh "aws s3 cp /jenkins-home-new/workspace/docker-swarm/target/LoginRegisterApp.war s3://artifactory-9am-weekend"
-            }'
+            }
 			
         post {
                 // If Maven was able to run the tests, even if some of the test
