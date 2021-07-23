@@ -29,7 +29,6 @@ pipeline {
                 // failed, record the test results and archive the jar file.
                 success {
                     sh "aws s3 cp /jenkins-home-new/workspace/docker-swarm/target/LoginRegisterApp.war s3://artifactory-9am-weekend"
-					emailext {}
                 }
             }
         }
