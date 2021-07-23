@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
         // Install the Maven version configured as "M3" and add it to the path.
-        maven "maven-3.6.3"
+        maven "maven-3.8.1"
     }
 	environment {
 		Triggered_BY = "Auto Triggered"
@@ -14,22 +14,17 @@ pipeline {
             steps {
                 // Get some code from a GitHub repository
                 git branch: 'dev', url: 'https://github.com/mailrahulsre/java-db-Login.git'
+				}
 		}
-	}
-			
+				
         stage('build code') {
-     
-		steps {
+            steps {
                 // Run Maven on a Unix agent.
                 sh "mvn clean package"
-            },	
-	      
-		steps {
-                // Run Maven on a Unix agent.
-                sh "aws s3 cp /jenkins-home-new/workspace/docker-swarm/target/LoginRegisterApp.war s3://artifactory-9am-weekend"
-            }
+				}
+		}
 			
-        post {
+            post {
                 // If Maven was able to run the tests, even if some of the test
                 // failed, record the test results and archive the jar file.
                 success {
@@ -39,4 +34,3 @@ pipeline {
             }
         }
     }
-}
