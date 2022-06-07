@@ -2,9 +2,9 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.sample</groupId>
-  <artifactId>trainingwale</artifactId>
+  <artifactId>training</artifactId>
   <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.1</version>
   <name>TrainingWale Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <dependencies>
@@ -24,7 +24,7 @@
                                 <version>2.2</version>
                                 <configuration>
                                 <path>/${project.artifactId}##${project.version}</path>
-                                <url>http://65.0.104.14:8080/manager/text</url>
+                                <url>http://localhost:8080/manager/text</url>
                                         <username>admin</username>
                                         <password>adminadmin</password>
                                         <update>true</update>
