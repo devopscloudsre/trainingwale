@@ -1,7 +1,7 @@
 <html>
 <body>
 
-<h1>Welcome to DevOps Class</h1>
-<h1>Maven 2nd project completed.</h1>
+<h1>Welcome TVS Group to our DevOps Class</h1>
+<h2>You have Successfully Completed - Maven 2nd project</h2>
 </body>
 </html>
